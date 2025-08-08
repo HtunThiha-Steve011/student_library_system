@@ -1,3 +1,7 @@
+import book.BookManager;
+import book.Book;
+import java.io.IOException;
+
 public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(StudentAndBookManagementFrame.class.getName());
@@ -7,6 +11,12 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
      */
     public StudentAndBookManagementFrame() {
         initComponents();
+        try {
+            BookManager.loadBooks();
+            updateBookPanelTitle();
+            setDisplayBookInfo(0);
+        } catch (IOException e) {
+        }
     }
 
     /**
@@ -559,6 +569,26 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void updateBookPanelTitle() {
+        int bookNumber = currentBookIndex + 1;
+        int numOfTotalBooks = BookManager.booksArr.size();
+        if(numOfTotalBooks != 0) {
+            String newTitle = String.format("Book %d of %d", bookNumber, numOfTotalBooks);
+            pnlBookInfo.setBorder(javax.swing.BorderFactory.createTitledBorder(newTitle));
+        }
+    }
+    
+    private void setDisplayBookInfo(int bookIndex) {
+        Book selectedBook = BookManager.booksArr.get(bookIndex);
+        
+        txtBookTitle.setText(selectedBook.getTitle());
+        txtBookAuthor.setText(selectedBook.getAuthor());
+        txtBookISBN.setText(selectedBook.getIsbn());
+        txtBookPrice.setText(String.valueOf(selectedBook.getPrice()));
+        txtBookCategory.setText(selectedBook.getCategory());
+        txtBookAvailable.setText(String.valueOf(selectedBook.getAvailable()));
+    }
+    
     private void btnDisplayStudentInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayStudentInfoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDisplayStudentInfoActionPerformed
@@ -662,6 +692,9 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+    // Custom variables
+    private int currentBookIndex = 0;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddNewBook;
