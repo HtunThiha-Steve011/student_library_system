@@ -228,7 +228,7 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
 
         pnlBookInfo.setBorder(javax.swing.BorderFactory.createTitledBorder("Book 0 of 0"));
 
-        lblBookTitle.setText("📜  Title: ");
+        lblBookTitle.setText("📕  Title: ");
 
         txtBookTitle.setEditable(false);
         txtBookTitle.setFocusable(false);
@@ -345,8 +345,8 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
                                     .addComponent(lblBookTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(pnlBookInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtBookAuthor, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                    .addComponent(txtBookTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                    .addComponent(txtBookTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+                                    .addComponent(txtBookAuthor)
                                     .addComponent(txtBookISBN)))
                             .addGroup(pnlBookInfoLayout.createSequentialGroup()
                                 .addGroup(pnlBookInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -355,16 +355,14 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
                                     .addComponent(lblBookPrice, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(pnlBookInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtBookPrice, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
                                     .addComponent(txtBookCategory)
-                                    .addComponent(txtBookPrice)
-                                    .addComponent(txtBookAvailable, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(11, 11, 11)
+                                    .addComponent(txtBookAvailable))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(pnlBookInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlBookInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnEditBook, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnDeleteBook, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(btnAddNewBook, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(11, 11, 11))
+                            .addComponent(btnEditBook, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnAddNewBook, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnDeleteBook)))))
         );
 
         pnlBookInfoLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btnBookFirst, btnBookLast, btnBookNext, btnBookPrevious});
@@ -634,19 +632,39 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStudentLastActionPerformed
 
     private void btnBookPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookPreviousActionPerformed
-        // TODO add your handling code here:
+        if(currentBookIndex != 0) {
+            currentBookIndex--;
+            updateBookPanelTitle();
+            setDisplayBookInfo(currentBookIndex);
+        }
     }//GEN-LAST:event_btnBookPreviousActionPerformed
 
     private void btnBookNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookNextActionPerformed
-        // TODO add your handling code here:
+        int lastBookIndex = BookManager.booksArr.size() - 1;
+        if(currentBookIndex != lastBookIndex) {
+            currentBookIndex++;
+            updateBookPanelTitle();
+            setDisplayBookInfo(currentBookIndex);
+        }
     }//GEN-LAST:event_btnBookNextActionPerformed
 
     private void btnBookFirstActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookFirstActionPerformed
-        // TODO add your handling code here:
+       int booksArrLength = BookManager.booksArr.size();
+        if(booksArrLength != 0) {
+            currentBookIndex = 0;
+            updateBookPanelTitle();
+            setDisplayBookInfo(currentBookIndex);
+        }
     }//GEN-LAST:event_btnBookFirstActionPerformed
 
     private void btnBookLastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookLastActionPerformed
-        // TODO add your handling code here:
+        int booksArrLength = BookManager.booksArr.size();
+        if(booksArrLength != 0) {
+            int lastBookIndex = booksArrLength - 1;
+            currentBookIndex = lastBookIndex;
+            updateBookPanelTitle();
+            setDisplayBookInfo(currentBookIndex);
+        }
     }//GEN-LAST:event_btnBookLastActionPerformed
 
     private void btnAddNewBookActionPerformed(java.awt.event.ActionEvent evt) {
