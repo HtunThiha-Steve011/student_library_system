@@ -1,6 +1,7 @@
 import book.BookManager;
 import book.Book;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     
@@ -596,7 +597,13 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDisplayBookInfoActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        // TODO add your handling code here:
+        try {
+            BookManager.saveBooks();
+            JOptionPane.showMessageDialog(null, "Program terminated.", "Exit", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+        } catch (IOException e) {
+            showErrorMessage("Failed to save data.\nPlease try again.");
+        }
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
@@ -677,6 +684,10 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     
     private void btnDeleteBookActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+    
+    private void showErrorMessage(String errorMessage) {
+        JOptionPane.showMessageDialog(null, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
     }
     
     /**

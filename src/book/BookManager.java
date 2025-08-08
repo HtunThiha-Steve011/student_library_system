@@ -13,4 +13,8 @@ public class BookManager {
             booksArr.add(book);
         }
     }
+    
+    public static void saveBooks() throws IOException {
+        BookFileManager.writeBooksIntoFile(booksArr);
+    }
 }

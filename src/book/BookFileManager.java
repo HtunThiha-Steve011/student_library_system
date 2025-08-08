@@ -52,8 +52,7 @@ public class BookFileManager {
         return new Book(name, author, isbn, price, category, isAvailable);
     }
     
-    public static void saveBooks() throws IOException {
-        List<Book> latestBooksArr = BookManager.booksArr;
+    public static void writeBooksIntoFile(List<Book> latestBooksArr) throws IOException {
         int numOfBooks = latestBooksArr.size();
         bookFile.delete();
         bookFile.createNewFile();
@@ -64,11 +63,11 @@ public class BookFileManager {
         for(int i = 0; i < numOfBooks; i++) {
             Book book = latestBooksArr.get(i);
             bookFileWriter.write(String.format(
-                    "%s;%s;%s;%.2f;%s;%s",
+                    "%s;%s;%s;%s;%s;%s;",
                     book.getTitle(),
                     book.getAuthor(),
                     book.getIsbn(),
-                    book.getPrice(),
+                    String.valueOf(book.getPrice()),
                     book.getCategory(),
                     String.valueOf(book.getAvailable())
             ));
