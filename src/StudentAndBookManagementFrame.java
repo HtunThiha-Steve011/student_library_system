@@ -1,7 +1,7 @@
 import book.BookManager;
 import book.Book;
 import java.io.IOException;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     
@@ -15,7 +15,9 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
         try {
             BookManager.loadBooks();
             updateBookPanelTitle();
-            setDisplayBookInfo(0);
+            if(BookManager.booksArr.size() != 0) {
+                setDisplayBookInfo(0);
+            }
         } catch (IOException e) {
         }
     }
@@ -571,10 +573,13 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     private void updateBookPanelTitle() {
         int bookNumber = currentBookIndex + 1;
         int numOfTotalBooks = BookManager.booksArr.size();
+        String newTitle;
         if(numOfTotalBooks != 0) {
-            String newTitle = String.format("Book %d of %d", bookNumber, numOfTotalBooks);
-            pnlBookInfo.setBorder(javax.swing.BorderFactory.createTitledBorder(newTitle));
+            newTitle = String.format("Book %d of %d", bookNumber, numOfTotalBooks);
+        } else {
+            newTitle = "Book 0 of 0";
         }
+        pnlBookInfo.setBorder(javax.swing.BorderFactory.createTitledBorder(newTitle));
     }
     
     private void setDisplayBookInfo(int bookIndex) {
@@ -586,6 +591,15 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
         txtBookPrice.setText(String.valueOf(selectedBook.getPrice()));
         txtBookCategory.setText(selectedBook.getCategory());
         txtBookAvailable.setText(String.valueOf(selectedBook.getAvailable()));
+    }
+    
+    private void clearDisplayBookInfo() {
+        txtBookTitle.setText("");
+        txtBookAuthor.setText("");
+        txtBookISBN.setText("");
+        txtBookPrice.setText("");
+        txtBookCategory.setText("");
+        txtBookAvailable.setText("");
     }
     
     private void btnDisplayStudentInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisplayStudentInfoActionPerformed
@@ -639,7 +653,7 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnStudentLastActionPerformed
 
     private void btnBookPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookPreviousActionPerformed
-        if(currentBookIndex != 0) {
+        if(currentBookIndex > 0) {
             currentBookIndex--;
             updateBookPanelTitle();
             setDisplayBookInfo(currentBookIndex);
@@ -648,7 +662,7 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
 
     private void btnBookNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBookNextActionPerformed
         int lastBookIndex = BookManager.booksArr.size() - 1;
-        if(currentBookIndex != lastBookIndex) {
+        if(currentBookIndex != lastBookIndex && lastBookIndex != -1) {
             currentBookIndex++;
             updateBookPanelTitle();
             setDisplayBookInfo(currentBookIndex);
@@ -675,15 +689,243 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBookLastActionPerformed
 
     private void btnAddNewBookActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        JTextField txtBookTitleInput = new JTextField(15);
+        JTextField txtBookAuthorInput = new JTextField(15);
+        JTextField txtBookISBNInput = new JTextField(15);
+        JTextField txtBookPriceInput = new JTextField(15);
+        JTextField txtBookCategoryInput = new JTextField(15);
+
+        JPanel mainPanel = new JPanel();
+        JPanel bookTitlePanel = new JPanel();
+        JPanel bookAuthorPanel = new JPanel();
+        JPanel bookISBNPanel = new JPanel();
+        JPanel bookPricePanel = new JPanel();
+        JPanel bookCategoryPanel = new JPanel();
+        
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        bookTitlePanel.setLayout(new BoxLayout(bookTitlePanel, BoxLayout.X_AXIS));
+        bookAuthorPanel.setLayout(new BoxLayout(bookAuthorPanel, BoxLayout.X_AXIS));
+        bookISBNPanel.setLayout(new BoxLayout(bookISBNPanel, BoxLayout.X_AXIS));
+        bookPricePanel.setLayout(new BoxLayout(bookPricePanel, BoxLayout.X_AXIS));
+        bookCategoryPanel.setLayout(new BoxLayout(bookCategoryPanel, BoxLayout.X_AXIS));
+        
+        bookTitlePanel.add(new JLabel("📘 Title:           "));
+        bookAuthorPanel.add(new JLabel("👤 Author:        "));
+        bookISBNPanel.add(new JLabel("📃 ISBN:          "));
+        bookPricePanel.add(new JLabel("💲 Price:          "));
+        bookCategoryPanel.add(new JLabel("📚 Category:    "));
+        
+        bookTitlePanel.add(txtBookTitleInput);
+        bookAuthorPanel.add(txtBookAuthorInput);
+        bookISBNPanel.add(txtBookISBNInput);
+        bookPricePanel.add(txtBookPriceInput);
+        bookCategoryPanel.add(txtBookCategoryInput);
+        
+        JLabel lblCreateBook = new JLabel("Create Book");
+        lblCreateBook.setForeground(new java.awt.Color(0, 102, 0));
+        lblCreateBook.setFont(new java.awt.Font("Segoe UI", 1, 13));
+        
+        mainPanel.add(lblCreateBook);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookTitlePanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookAuthorPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookISBNPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookPricePanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookCategoryPanel);
+
+        int result = JOptionPane.showConfirmDialog(null, mainPanel, "Add New Book", JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION) {
+            try {
+                String bookTitleInput = txtBookTitleInput.getText();
+                String bookAuthorInput = txtBookAuthorInput.getText();
+                String bookISBNInput = txtBookISBNInput.getText();
+                String bookCategoryInput = txtBookCategoryInput.getText();
+
+                if(bookTitleInput.equals("") || bookAuthorInput.equals("") || bookCategoryInput .equals("") || txtBookPriceInput.getText().equals("") || bookCategoryInput.equals("")) {
+                    throw new IllegalArgumentException();
+                }
+                
+                Double bookPriceInput = Double.parseDouble(txtBookPriceInput.getText());
+                
+                Book newBook = new Book(bookTitleInput, bookAuthorInput, bookISBNInput, bookPriceInput, bookCategoryInput, true);
+                BookManager.booksArr.add(newBook);
+                updateBookPanelTitle();
+                
+                JOptionPane.showMessageDialog(null, "New book added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (NumberFormatException e) {
+                showErrorMessage("Please enter only numbers and decimals for book price.");
+            } catch (IllegalArgumentException e) {
+                showErrorMessage("Please enter all the necessary information for creating book.");
+            }
+        }
     }
     
     private void btnEditBookActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        if(BookManager.booksArr.size() == 0) {
+            showErrorMessage("No book selected currently.\n Please add a book first.");
+            return;
+        }
+        JTextField txtBookTitleInput = new JTextField(15);
+        JTextField txtBookAuthorInput = new JTextField(15);
+        JTextField txtBookISBNInput = new JTextField(15);
+        JTextField txtBookPriceInput = new JTextField(15);
+        JTextField txtBookCategoryInput = new JTextField(15);
+
+        JPanel mainPanel = new JPanel();
+        JPanel bookTitlePanel = new JPanel();
+        JPanel bookAuthorPanel = new JPanel();
+        JPanel bookISBNPanel = new JPanel();
+        JPanel bookPricePanel = new JPanel();
+        JPanel bookCategoryPanel = new JPanel();
+        
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        bookTitlePanel.setLayout(new BoxLayout(bookTitlePanel, BoxLayout.X_AXIS));
+        bookAuthorPanel.setLayout(new BoxLayout(bookAuthorPanel, BoxLayout.X_AXIS));
+        bookISBNPanel.setLayout(new BoxLayout(bookISBNPanel, BoxLayout.X_AXIS));
+        bookPricePanel.setLayout(new BoxLayout(bookPricePanel, BoxLayout.X_AXIS));
+        bookCategoryPanel.setLayout(new BoxLayout(bookCategoryPanel, BoxLayout.X_AXIS));
+        
+        bookTitlePanel.add(new JLabel("📘 Title:           "));
+        bookAuthorPanel.add(new JLabel("👤 Author:        "));
+        bookISBNPanel.add(new JLabel("📃 ISBN:          "));
+        bookPricePanel.add(new JLabel("💲 Price:          "));
+        bookCategoryPanel.add(new JLabel("📚 Category:    "));
+        
+        txtBookTitleInput.setText(txtBookTitle.getText());
+        txtBookAuthorInput.setText(txtBookAuthor.getText());
+        txtBookISBNInput.setText(txtBookISBN.getText());
+        txtBookCategoryInput.setText(txtBookCategory.getText());
+        txtBookPriceInput.setText(txtBookPrice.getText());
+        
+        bookTitlePanel.add(txtBookTitleInput);
+        bookAuthorPanel.add(txtBookAuthorInput);
+        bookISBNPanel.add(txtBookISBNInput);
+        bookPricePanel.add(txtBookPriceInput);
+        bookCategoryPanel.add(txtBookCategoryInput);
+        
+        JLabel lblEditBook = new JLabel("Edit Book");
+        lblEditBook.setForeground(new java.awt.Color(0, 102, 255));
+        lblEditBook.setFont(new java.awt.Font("Segoe UI", 1, 13));
+        
+        mainPanel.add(lblEditBook);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookTitlePanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookAuthorPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookISBNPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookPricePanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookCategoryPanel);
+
+        int result = JOptionPane.showConfirmDialog(null, mainPanel, "Edit Book - " + txtBookISBN.getText(), JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION) {
+            try {
+                String bookTitleInput = txtBookTitleInput.getText();
+                String bookAuthorInput = txtBookAuthorInput.getText();
+                String bookISBNInput = txtBookISBNInput.getText();
+                String bookCategoryInput = txtBookCategoryInput.getText();
+
+                if(bookTitleInput.equals("") || bookAuthorInput.equals("") || bookCategoryInput .equals("") || txtBookPriceInput.getText().equals("") || bookCategoryInput.equals("")) {
+                    throw new IllegalArgumentException();
+                }
+                
+                Double bookPriceInput = Double.parseDouble(txtBookPriceInput.getText());
+                
+                Book editedBook = new Book(bookTitleInput, bookAuthorInput, bookISBNInput, bookPriceInput, bookCategoryInput, true);
+                BookManager.booksArr.set(currentBookIndex, editedBook);
+                updateBookPanelTitle();
+                setDisplayBookInfo(currentBookIndex);
+                
+                JOptionPane.showMessageDialog(null, "Book edited successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } catch (NumberFormatException e) {
+                showErrorMessage("Please enter only numbers and decimals for book price.");
+            } catch (IllegalArgumentException e) {
+                showErrorMessage("Please enter all the necessary information for creating book.");
+            }
+        }
     }
     
     private void btnDeleteBookActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
+        JTextField txtBookTitleInput = new JTextField(15);
+        JTextField txtBookAuthorInput = new JTextField(15);
+        JTextField txtBookISBNInput = new JTextField(15);
+        JTextField txtBookPriceInput = new JTextField(15);
+        JTextField txtBookCategoryInput = new JTextField(15);
+
+        JPanel mainPanel = new JPanel();
+        JPanel bookTitlePanel = new JPanel();
+        JPanel bookAuthorPanel = new JPanel();
+        JPanel bookISBNPanel = new JPanel();
+        JPanel bookPricePanel = new JPanel();
+        JPanel bookCategoryPanel = new JPanel();
+        
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        bookTitlePanel.setLayout(new BoxLayout(bookTitlePanel, BoxLayout.X_AXIS));
+        bookAuthorPanel.setLayout(new BoxLayout(bookAuthorPanel, BoxLayout.X_AXIS));
+        bookISBNPanel.setLayout(new BoxLayout(bookISBNPanel, BoxLayout.X_AXIS));
+        bookPricePanel.setLayout(new BoxLayout(bookPricePanel, BoxLayout.X_AXIS));
+        bookCategoryPanel.setLayout(new BoxLayout(bookCategoryPanel, BoxLayout.X_AXIS));
+        
+        bookTitlePanel.add(new JLabel("📘 Title:           "));
+        bookAuthorPanel.add(new JLabel("👤 Author:        "));
+        bookISBNPanel.add(new JLabel("📃 ISBN:          "));
+        bookPricePanel.add(new JLabel("💲 Price:          "));
+        bookCategoryPanel.add(new JLabel("📚 Category:    "));
+        
+        txtBookTitleInput.setText(txtBookTitle.getText());
+        txtBookAuthorInput.setText(txtBookAuthor.getText());
+        txtBookISBNInput.setText(txtBookISBN.getText());
+        txtBookCategoryInput.setText(txtBookCategory.getText());
+        txtBookPriceInput.setText(txtBookPrice.getText());
+        
+        txtBookTitleInput.setFocusable(false);
+        txtBookAuthorInput.setFocusable(false);
+        txtBookISBNInput.setFocusable(false);
+        txtBookCategoryInput.setFocusable(false);
+        txtBookPriceInput.setFocusable(false);
+        
+        bookTitlePanel.add(txtBookTitleInput);
+        bookAuthorPanel.add(txtBookAuthorInput);
+        bookISBNPanel.add(txtBookISBNInput);
+        bookPricePanel.add(txtBookPriceInput);
+        bookCategoryPanel.add(txtBookCategoryInput);
+        
+        JLabel lblDeleteBook = new JLabel("Delete this book permanently?");
+        lblDeleteBook.setForeground(new java.awt.Color(255, 51, 51));
+        lblDeleteBook.setFont(new java.awt.Font("Segoe UI", 1, 13));
+        
+        mainPanel.add(lblDeleteBook);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookTitlePanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookAuthorPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookISBNPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookPricePanel);
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(bookCategoryPanel);
+
+        int result = JOptionPane.showConfirmDialog(null, mainPanel, "Delete Book - " + txtBookISBN.getText(), JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION) {
+            BookManager.booksArr.remove(currentBookIndex);
+            if(BookManager.booksArr.size() != 0) {
+                currentBookIndex = 0;
+                setDisplayBookInfo(currentBookIndex);
+            } else {
+                currentBookIndex = -1;
+                clearDisplayBookInfo();
+            }
+            updateBookPanelTitle();
+
+            JOptionPane.showMessageDialog(null, "Book deleted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
     
     private void showErrorMessage(String errorMessage) {
