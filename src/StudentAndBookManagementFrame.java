@@ -2,6 +2,7 @@ import book.BookManager;
 import book.Book;
 import java.io.IOException;
 import javax.swing.*;
+import student.StudentManager;
 
 public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     
@@ -19,6 +20,11 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
                 setDisplayBookInfo(0);
             }
         } catch (IOException e) {
+        }
+        try {
+            StudentManager.loadStudents();
+        } catch (IOException e) {
+            
         }
     }
 
@@ -613,6 +619,7 @@ public class StudentAndBookManagementFrame extends javax.swing.JFrame {
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         try {
             BookManager.saveBooks();
+            StudentManager.saveStudents();
             JOptionPane.showMessageDialog(null, "Program terminated.", "Exit", JOptionPane.INFORMATION_MESSAGE);
             System.exit(0);
         } catch (IOException e) {
